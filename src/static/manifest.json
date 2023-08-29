@@ -1,0 +1,30 @@
+{
+  "name": "Hito Kintai Helper",
+  "manifest_version": 3,
+  "version": "1.0",
+  "description": "Auto performe check in/out process in time",
+  "permissions": ["cookies", "storage", "notifications"],
+  "host_permissions": ["<all_urls>"],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}
