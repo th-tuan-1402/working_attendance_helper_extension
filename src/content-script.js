@@ -1,11 +1,8 @@
-import { login, loginKintai, checkin, checkout } from './static/hitoCommonApi'
-import { getStorageItem, addTimer } from './static/ChromeApiHelper';
+import { login, loginKintai, checkin, checkout, syncKintaiStatus } from './static/hitoCommonApi'
+import { getStorageItem } from './static/ChromeApiHelper';
 
 (async function () {
   let now = new Date()
-  // let timerStartTime = new Date(now.getTime() + 5 * 1000)
-  
-  // addTimer(timerStartTime, () => { console.warn('time call') })
 
   if (await shouldCheckIn(now)) {
     await login()

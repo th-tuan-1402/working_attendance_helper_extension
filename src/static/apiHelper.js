@@ -38,6 +38,7 @@ function responseErrorHandler(error) {
   if (error.response) {
     if (error.response.status == 403) {
       console.warn('bad request')
+      throw error
     } else if (error.response.status == 401) {
       console.warn('unauthoried')
       login()

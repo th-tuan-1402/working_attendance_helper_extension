@@ -1,4 +1,4 @@
-import { checkin, checkout } from './static/hitoCommonApi';
+import { checkin, checkout, login, loginKintai } from './static/hitoCommonApi';
 import { getStorageItem } from './static/ChromeApiHelper';
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
@@ -36,11 +36,20 @@ import { getStorageItem } from './static/ChromeApiHelper';
   }
 })();
 
+function checkInHandler() {
+  login()
+  loginKintai()
+  checkin()
+}
+
 function checkOutHandler() {
   const now = new Date()
 
   if (now.getHours() < 17) {
     if (confirm('Đang trong thời gian làm việc, bạn chắc chứ!!!')) {
+      login()
+      loginKintai()
+
       checkout()
     }
   }
