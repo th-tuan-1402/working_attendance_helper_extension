@@ -33,4 +33,9 @@ async function onSave() {
     // Relogin
     await login()
     await loginKintai()
+
+    const lbProcessStatus = document.getElementById('processStatus')
+
+    lbProcessStatus.innerText = "Saved"
+    lbProcessStatus.style.display = "block"
 }

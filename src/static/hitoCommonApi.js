@@ -37,9 +37,11 @@ export async function syncKintaiStatus() {
   let dataObj = await api.getKintaiStatus()
 
   if (dataObj.success) {
+    const { checkin: canCheckIn, checkout: canCheckOut } = dataObj.data
+
     let saveItems = {
-      isCheckedIn: isCheckedIn,
-      isCheckedOut: isCheckedOut
+      isCheckedIn: !canCheckIn,
+      isCheckedOut: !canCheckIn && !canCheckOut
     }
 
     await setStorageItem(saveItems)
@@ -60,7 +62,7 @@ export async function checkin() {
 
   if (dataObj.success) {
     // Set checkin timestamp
-    await setStorageItem({ checkedInDatetime: now })
+    await setStorageItem({ checkedInDatetime: (new Date()).toLocaleDateString() })
 
     // Notify
     notify('✅Notification', 'You have been checked in')

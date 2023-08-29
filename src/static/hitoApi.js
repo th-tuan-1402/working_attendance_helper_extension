@@ -133,6 +133,12 @@ export default {
                 })
                 .catch(err => {
                     console.warn(err);
+
+                    // Whether it is already checked in, return as normal result
+                    if (err.response?.status == 403) {
+                        data.success = true
+                    }
+
                     resolve(data)
                 })
         })
