@@ -1,5 +1,5 @@
-import { checkin, checkout, login, loginKintai } from './static/hitoCommonApi';
-import { getStorageItem } from './static/ChromeApiHelper';
+import { checkin, checkout, login, loginKintai } from './hitoCommonApi';
+import { getStorageItem, notify } from './ChromeApiHelper';
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
 (async function initPopupWindow() {
@@ -27,7 +27,7 @@ import { getStorageItem } from './static/ChromeApiHelper';
   const btnChangeStatus = document.getElementById('btnChangeStatus')
   if (!isCheckedIn) {
     btnChangeStatus.innerText = 'Check in'
-    btnChangeStatus.addEventListener('click', checkin)
+    btnChangeStatus.addEventListener('click', checkInHandler)
   } else if (!isCheckedOut) {
     btnChangeStatus.innerText = 'Check out'
     btnChangeStatus.addEventListener('click', checkOutHandler)
@@ -36,21 +36,36 @@ import { getStorageItem } from './static/ChromeApiHelper';
   }
 })();
 
-function checkInHandler() {
-  login()
-  loginKintai()
-  checkin()
+async function checkInHandler() {
+  await login()
+
+  await loginKintai()
+
+  await checkin()
+    .then(dataObj => {
+      if (dataObj.success) {
+        // Notify
+        notify('✅Notification', 'You have been checked in')
+      }
+    })
 }
 
-function checkOutHandler() {
+async function checkOutHandler() {
   const now = new Date()
 
   if (now.getHours() < 17) {
     if (confirm('Đang trong thời gian làm việc, bạn chắc chứ!!!')) {
-      login()
-      loginKintai()
+      await login()
 
-      checkout()
+      await loginKintai()
+
+      await checkout()
+        .then(dataObj => {
+          if (dataObj.success) {
+            // Notify
+            notify('✅Notification', 'You have been checked out')
+          }
+        })
     }
   }
 }

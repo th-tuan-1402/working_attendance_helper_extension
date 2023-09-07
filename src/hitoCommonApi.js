@@ -1,5 +1,5 @@
 import api from "./hitoApi";
-import { getStorageItem, setStorageItem, removeStorageItem, notify } from "./ChromeApiHelper";
+import { getStorageItem, setStorageItem, removeStorageItem } from "./ChromeApiHelper";
 
 export async function login() {
   const username = await getStorageItem('username')
@@ -10,16 +10,18 @@ export async function login() {
     "password": password,
     "locale": "vi",
     "remember": false
-  } 
-  
+  }
+
   let dataObj = await api.login(params)
 
   if (dataObj.success) {
+    console.log('Token is refresh!!!');
     await setStorageItem({ 'apiToken': dataObj.data.token })
-    console.warn('Token is refresh!!!');
   } else {
-    notify("Error", dataObj.message)
+    console.error("Error", dataObj.message)
   }
+
+  return dataObj
 }
 
 export async function loginKintai() {
@@ -27,10 +29,12 @@ export async function loginKintai() {
 
   if (dataObj.success) {
     await setStorageItem({ 'apiTokenKintai': dataObj.data.api_token })
-    console.warn('kintai token is refresh!!!');
+    console.log('kintai token is refresh!!!');
   } else {
-    notify("Error", dataObj.message)
+    console.error("Error", dataObj.message)
   }
+
+  return dataObj
 }
 
 export async function syncKintaiStatus() {
@@ -46,8 +50,10 @@ export async function syncKintaiStatus() {
 
     await setStorageItem(saveItems)
   } else {
-    notify("Error", dataObj.message)
+    console.log("Error", dataObj.message)
   }
+
+  return dataObj
 }
 
 export async function checkin() {
@@ -58,17 +64,16 @@ export async function checkin() {
   }
 
   let dataObj = await api.changeKintaiStatus(params)
-  console.warn(dataObj);
+  console.log(dataObj);
 
   if (dataObj.success) {
     // Set checkin timestamp
     await setStorageItem({ checkedInDatetime: (new Date()).toLocaleDateString() })
-
-    // Notify
-    notify('✅Notification', 'You have been checked in')
   } else {
-    notify("Error", dataObj.message)
+    console.error("Error", dataObj.message)
   }
+
+  return dataObj
 }
 
 export async function checkout() {
@@ -83,10 +88,21 @@ export async function checkout() {
   if (dataObj.success) {
     // Remove checkin timestamp
     removeStorageItem('checkInDatetime')
-
-    // Notify
-    notify('✅Notification', 'You have been checked out')
   } else {
-    notify("Error", dataObj.message)
+    console.error("Error", dataObj.message)
   }
+
+  return dataObj
+}
+
+export async function refreshToken() {
+  console.log('start refresh token');
+  
+  let {success} = await login()
+  if (success) {
+    return await loginKintai()
+  }
+
+  console.log('end refresh token');
+  return false
 }

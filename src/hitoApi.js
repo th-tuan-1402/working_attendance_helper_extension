@@ -1,4 +1,4 @@
-import apiHelper from './apiHelper'
+import axios from './plugin/axios'
 import { getStorageItem } from './ChromeApiHelper'
 
 const HITO_DOMAIN = 'https://hito.lampart-vn.com'
@@ -13,12 +13,12 @@ export default {
 
     // Check token
     async isValidToken() {
-        console.warn('api isValidToken start');
+        console.log('api isValidToken start');
 
         const isValid = await new Promise((resolve, reject) => {
             let isValid = false;
 
-            apiHelper.get(this.API_CHECK_TOKEN)
+            axios.get(this.API_CHECK_TOKEN)
                 .then(res => {
                     // If It has data => token is valid
                     // Otherwise      => token is invalid
@@ -29,14 +29,14 @@ export default {
                 .catch(err => resolve(isValid))
         })
 
-        console.warn('api isValidToken end');
+        console.log('api isValidToken end');
 
         return isValid
     },
 
     // Login
     async login(params) {
-        console.warn('api login start');
+        console.log('api login start');
 
         const isValid = await new Promise((resolve, reject) => {
             let data = {
@@ -44,25 +44,24 @@ export default {
                 data: null
             }
 
-            apiHelper.post(this.API_LOGIN, params)
+            axios.post(this.API_LOGIN, params)
                 .then(res => {
                     data = res.data
                     resolve(data)
                 })
                 .catch(err => {
-                    console.warn(err);
                     resolve(data)
                 })
         })
 
-        console.warn('api login end');
+        console.log('api login end');
 
         return isValid
     },
 
     // Login kintai
     async loginKintai() {
-        console.warn('api login kintai start');
+        console.log('api login kintai start');
 
         let params = {
             locale: 'vi',
@@ -75,25 +74,24 @@ export default {
                 data: null
             }
 
-            apiHelper.post(this.API_KINTAI_LOGIN, params)
+            axios.post(this.API_KINTAI_LOGIN, params)
                 .then(res => {
                     data = res.data
                     resolve(data)
                 })
                 .catch(err => {
-                    console.warn(err);
                     resolve(data)
                 })
         })
 
-        console.warn('api login kintai end');
+        console.log('api login kintai end');
 
         return isValid
     },
 
     // Get kintai status
     async getKintaiStatus() {
-        console.warn('api get kintai status start');
+        console.log('api get kintai status start');
 
         const result = await new Promise((resolve, reject) => {
             let data = {
@@ -101,24 +99,23 @@ export default {
                 data: null
             }
 
-            apiHelper.get(this.API_KINTAI_STATUS, {isKintaiSystem: true})
+            axios.get(this.API_KINTAI_STATUS, { isKintaiSystem: true })
                 .then(res => {
                     data = res.data
                     resolve(data)
                 })
                 .catch(err => {
-                    console.warn(err);
                     resolve(data)
                 })
         })
 
-        console.warn('api get kintai status end');
+        console.log('api get kintai status end');
         return result
     },
 
     // Change kintai status
     async changeKintaiStatus(params) {
-        console.warn('api change kintai status start');
+        console.log('api change kintai status start');
 
         const result = await new Promise((resolve, reject) => {
             let data = {
@@ -126,14 +123,12 @@ export default {
                 data: null
             }
 
-            apiHelper.post(this.API_KINTAI_STATUS, params, {isKintaiSystem: true})
+            axios.post(this.API_KINTAI_STATUS, params, { isKintaiSystem: true })
                 .then(res => {
                     data = res.data
                     resolve(data)
                 })
                 .catch(err => {
-                    console.warn(err);
-
                     // Whether it is already checked in, return as normal result
                     if (err.response?.status == 403) {
                         data.success = true
@@ -143,7 +138,7 @@ export default {
                 })
         })
 
-        console.warn('api change kintai status end');
+        console.log('api change kintai status end');
         return result
     }
 }
