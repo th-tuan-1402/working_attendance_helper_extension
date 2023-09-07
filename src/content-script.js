@@ -1,8 +1,9 @@
-import { login, loginKintai, checkin, checkout, syncKintaiStatus } from './static/hitoCommonApi'
-import { getStorageItem } from './static/ChromeApiHelper';
+import { login, loginKintai, checkin, checkout, syncKintaiStatus } from './hitoCommonApi'
+import { getStorageItem, notify } from './ChromeApiHelper';
 
 (async function () {
   let now = new Date()
+  await syncKintaiStatus()
 
   if (await shouldCheckIn(now)) {
     await login()
@@ -10,25 +11,73 @@ import { getStorageItem } from './static/ChromeApiHelper';
 
     // Check in
     await checkin()
+    .then(dataObj => {
+      if (dataObj.success) {
+          // Notify
+          notify('✅Notification', 'You have been checked in')
+      }
+    })
 
-    // Get kintai status
-    await syncKintaiStatus()
-  } else if (now.getHours() >= 17) {
+  // Get kintai status
+  } else if (await shouldCheckOut(now)) {
     await login()
     await loginKintai()
 
+    // Check out
     checkout()
+    .then(dataObj => {
+      if (dataObj.success) {
+          // Notify
+          notify('✅Notification', 'You have been checked out')
+      }
+    })
   }
 })()
 
+/**
+ * Should check in
+ * @param {Date} now 
+ * @returns 
+ */
 async function shouldCheckIn(now) {
-  let checkedInDatetime = await getStorageItem('checkedInDatetime')
+  const isAutoCheckIn = await getStorageItem('isAutoCheckIn')
+  if (!isAutoCheckIn) {
+    return false
+  }
 
+  // Checked in mark timestamp for reduce api call
+  let checkedInDatetime = await getStorageItem('checkedInDatetime')
   if (checkedInDatetime && checkedInDatetime === now.toLocaleDateString()) {
     return false
   }
 
-  if (now.getHours() == 8 && now.getMinutes() <= 30) {
+  // For first installation, call api further to check kintai status
+  if (now.getHours() == 7 && now.getMinutes() <= 30) {
+    return false
+  }
+
+  // Whether it can check in
+  const canCheckIn = await getStorageItem('isCheckedIn')
+  if (!canCheckIn) {
+    return false
+  }
+
+  return true
+}
+
+async function shouldCheckOut(now) {
+  const isAutoCheckOut = await getStorageItem('isAutoCheckOut')
+  if (!isAutoCheckOut) {
+    return false
+  }
+
+  if (now.getHours() < 17) {
+    return false
+  }
+
+  // Whether it can check in
+  const canCheckOut = await getStorageItem('isCheckedOut')
+  if (!canCheckOut) {
     return false
   }
 
