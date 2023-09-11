@@ -21,17 +21,3 @@ export function notify(title='notification', message) {
     }
   });
 }
-
-/**
- * @param {any} startTime
- * @param {any} callback
- */
-export function addTimer(startTime, callback) {
-  chrome.runtime.sendMessage('', {
-    type: 'addTimer',
-    data: {
-      startTime: startTime,
-      callback: callback
-    }
-  });
-}

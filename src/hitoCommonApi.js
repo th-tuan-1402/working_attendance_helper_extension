@@ -86,8 +86,8 @@ export async function checkout() {
   let dataObj = await api.changeKintaiStatus(params)
 
   if (dataObj.success) {
-    // Remove checkin timestamp
-    removeStorageItem('checkInDatetime')
+    // Save checkout timestamp
+    await setStorageItem({ checkedOutDatetime: (new Date()).toLocaleDateString() })
   } else {
     console.error("Error", dataObj.message)
   }
@@ -98,11 +98,8 @@ export async function checkout() {
 export async function refreshToken() {
   console.log('start refresh token');
   
-  let {success} = await login()
-  if (success) {
-    return await loginKintai()
-  }
+  await login()
+  await loginKintai()
 
   console.log('end refresh token');
-  return false
 }
