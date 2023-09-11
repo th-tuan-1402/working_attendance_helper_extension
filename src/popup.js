@@ -34,10 +34,10 @@ import { getStorageItem, notify } from './ChromeApiHelper';
 
     if (!isCheckedIn) {
       btnChangeStatus.innerText = 'Check in'
-      btnChangeStatus.addEventListener('click', checkInHandler)
+      btnChangeStatus.addEventListener('click', onCheckIn)
     } else if (!isCheckedOut) {
       btnChangeStatus.innerText = 'Check out'
-      btnChangeStatus.addEventListener('click', checkOutHandler)
+      btnChangeStatus.addEventListener('click', onCheckOut)
     } else {
       btnChangeStatus.setAttribute('disabled', 'disabled')
       btnChangeStatus?.classList.add('bg-gray-300', 'focus:outline-none')
@@ -50,7 +50,7 @@ import { getStorageItem, notify } from './ChromeApiHelper';
   }
 })();
 
-async function checkInHandler() {
+async function onCheckIn() {
   try {
     await refreshToken()
 
@@ -76,7 +76,7 @@ async function checkInHandler() {
   }
 }
 
-async function checkOutHandler() {
+async function onCheckOut() {
   const now = new Date()
 
   if (now.getHours() < 17) {

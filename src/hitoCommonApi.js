@@ -1,5 +1,5 @@
 import api from "./hitoApi";
-import { getStorageItem, setStorageItem, removeStorageItem } from "./ChromeApiHelper";
+import { getStorageItem, setStorageItem } from "./ChromeApiHelper";
 
 export async function login() {
   const username = await getStorageItem('username')
