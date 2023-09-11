@@ -1,67 +1,48 @@
 import { getStorageItem, setStorageItem } from "./ChromeApiHelper";
-import { refreshToken } from "./hitoCommonApi";
 
 (async function () {
+    // Init display
 
-    let username = await getStorageItem('username') ?? ''
-
+    // User name
     const usernameInp = document.getElementById('username')
+    const username = await getStorageItem('username') ?? ''
     usernameInp.value = username
 
-    let password = await getStorageItem('password') ?? ''
-
+    // Password
     const passwordInp = document.getElementById('password')
+    let password = await getStorageItem('password') ?? ''
     passwordInp.value = password
 
+    // isAutoCheckIn
     const chkIsAutoCheckIn = document.getElementById('isAutoCheckIn')
     let isAutoCheckIn = await getStorageItem('isAutoCheckIn') ?? false
     if (isAutoCheckIn) {
         chkIsAutoCheckIn?.setAttribute('checked', 'checked')
     }
 
-    chkIsAutoCheckIn?.addEventListener('change', async () => {
-        const value = chkIsAutoCheckIn.checked
-        await setStorageItem({isAutoCheckIn: value})
-    })
-
+    // isAutoCheckOut
     const chkIsAutoCheckOut = document.getElementById('isAutoCheckOut')
     let isAutoCheckOut = await getStorageItem('isAutoCheckOut') ?? false
     if (isAutoCheckOut) {
         chkIsAutoCheckOut?.setAttribute('checked', 'checked')
     }
 
+    // Add event listeners
+    usernameInp?.addEventListener('change', async (e) => {
+        await setStorageItem({username: usernameInp.value})
+    })
+
+    passwordInp?.addEventListener('change', async (e) => {
+        await setStorageItem({password: passwordInp.value})
+    })
+
+    chkIsAutoCheckIn?.addEventListener('change', async () => {
+        const value = chkIsAutoCheckIn.checked
+        await setStorageItem({isAutoCheckIn: value})
+    })
+
     chkIsAutoCheckOut?.addEventListener('change', async () => {
         const value = chkIsAutoCheckOut.checked
         await setStorageItem({isAutoCheckOut: value})
     })
-
-    const btnGetToken = document.getElementById('btnGetToken')
-    btnGetToken.addEventListener('click', onSave)
 })()
-
-async function onSave() {
-    // Storage credential information
-    const usernameInp = document.getElementById('username')
-    const passwordInp = document.getElementById('password')
-
-    const saveItems = {
-        username: usernameInp.value,
-        password: passwordInp.value,
-    }
-    console.warn('option: ', saveItems);
-    await setStorageItem(saveItems)
-
-    let isSucceeded = false
-    try {
-        // Refresh token
-        await refreshToken()
-        isSucceeded = true
-    } catch(e) {}
-
-    // Display result status
-    const lbProcessStatus = document.getElementById('processStatus')
-    lbProcessStatus.innerText = "Get token " + (isSucceeded ? "succeeded" : "fail")
-    lbProcessStatus?.classList.toggle(isSucceeded ? 'text-green-300' : 'text-red-300')
-
-    lbProcessStatus.style.display = "block"
-}
