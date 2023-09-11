@@ -13,28 +13,31 @@
         <div class="mb-6">
             <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User name</label>
             <input type="username" id="username"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="form_input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="LPXXX" required>
         </div>
         <div class="mb-6">
             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
             <input type="password" id="password"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                class="form_input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="•••••••••" required>
         </div>
+        <div class="flex justify-center mb-6" id="processStatus" style="display: none;"></div>
+        <button type="button" id="btnGetToken"
+            class="mb-8 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-blue-800">Get
+            token</button>
         <div class="flex items-center mb-4">
             <input id="isAutoCheckIn" type="checkbox" value="1"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="isAutoCheckIn" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Auto checkin</label>
+                class="form_input w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="isAutoCheckIn" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Auto
+                checkin</label>
         </div>
         <div class="flex items-center mb-4">
             <input id="isAutoCheckOut" type="checkbox" value="1"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="isAutoCheckOut" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Auto checkout</label>
+                class="form_input w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="isAutoCheckOut" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Auto
+                checkout</label>
         </div>
-        <div class="flex justify-center mb-6 text-green-300" id="processStatus" style="display: none;"></div>
-        <button type="button" id="btnSave"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Save</button>
     </form>
 </body>
 <script src="./option.js"></script>

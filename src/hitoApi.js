@@ -38,25 +38,21 @@ export default {
     async login(params) {
         console.log('api login start');
 
-        const isValid = await new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let data = {
                 success: false,
                 data: null
             }
 
-            axios.post(this.API_LOGIN, params)
-                .then(res => {
-                    data = res.data
-                    resolve(data)
-                })
-                .catch(err => {
-                    resolve(data)
-                })
+            await axios.post(this.API_LOGIN, params)
+                        .then(res => {
+                            data = res.data
+                            resolve(data)
+                        })
+                        .catch(e => reject(e))
         })
 
         console.log('api login end');
-
-        return isValid
     },
 
     // Login kintai
@@ -68,25 +64,21 @@ export default {
             token: await getStorageItem('apiToken')
         }
 
-        const isValid = await new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let data = {
                 success: false,
                 data: null
             }
 
-            axios.post(this.API_KINTAI_LOGIN, params)
+            await axios.post(this.API_KINTAI_LOGIN, params)
                 .then(res => {
                     data = res.data
                     resolve(data)
                 })
-                .catch(err => {
-                    resolve(data)
-                })
+                .catch(e => reject(e))
         })
 
         console.log('api login kintai end');
-
-        return isValid
     },
 
     // Get kintai status
@@ -104,9 +96,7 @@ export default {
                     data = res.data
                     resolve(data)
                 })
-                .catch(err => {
-                    resolve(data)
-                })
+                .catch(e => Promise.reject(e))
         })
 
         console.log('api get kintai status end');
@@ -132,9 +122,10 @@ export default {
                     // Whether it is already checked in, return as normal result
                     if (err.response?.status == 403) {
                         data.success = true
+                        resolve(data)
                     }
 
-                    resolve(data)
+                    reject(err)
                 })
         })
 

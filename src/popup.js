@@ -1,4 +1,4 @@
-import { checkin, checkout, login, loginKintai } from './hitoCommonApi';
+import { checkin, checkout, refreshToken, syncKintaiStatus } from './hitoCommonApi';
 import { getStorageItem, notify } from './ChromeApiHelper';
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
@@ -14,40 +14,54 @@ import { getStorageItem, notify } from './ChromeApiHelper';
     }
   }
 
-  // Set change kintai status
-  const isCheckedIn = await getStorageItem('isCheckedIn')
-  const isCheckedOut = await getStorageItem('isCheckedOut')
-
   const timeLabel = document.getElementById('timeLabel')
   setInterval(() => {
     let now = new Date()
     timeLabel.innerText = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
   }, 1000)
 
-  const btnChangeStatus = document.getElementById('btnChangeStatus')
-  if (!isCheckedIn) {
-    btnChangeStatus.innerText = 'Check in'
-    btnChangeStatus.addEventListener('click', checkInHandler)
-  } else if (!isCheckedOut) {
-    btnChangeStatus.innerText = 'Check out'
-    btnChangeStatus.addEventListener('click', checkOutHandler)
-  } else {
-    btnChangeStatus.setAttribute('disabled', 'disabled')
+  try {
+    await refreshToken()
+    await syncKintaiStatus()
+
+    // Set change kintai status
+    const isCheckedIn = await getStorageItem('isCheckedIn')
+    const isCheckedOut = await getStorageItem('isCheckedOut')
+    console.warn('checked in: ', isCheckedIn, ' checked out: ', isCheckedOut);
+
+    const btnChangeStatus = document.getElementById('btnChangeStatus')
+    btnChangeStatus?.classList.toggle('hidden')
+
+    if (!isCheckedIn) {
+      btnChangeStatus.innerText = 'Check in'
+      btnChangeStatus.addEventListener('click', checkInHandler)
+    } else if (!isCheckedOut) {
+      btnChangeStatus.innerText = 'Check out'
+      btnChangeStatus.addEventListener('click', checkOutHandler)
+    } else {
+      btnChangeStatus.setAttribute('disabled', 'disabled')
+      btnChangeStatus?.classList.add('bg-gray-300', 'focus:outline-none')
+      btnChangeStatus?.classList.remove('bg-green-500')
+    }
+  } catch(e) {
+    const errMsg = document.getElementById('errMsg')
+    errMsg.innerText = "⛔Đồng bộ thất bại"
+    errMsg.classList.remove('hidden')
   }
 })();
 
 async function checkInHandler() {
-  await login()
+  try {
+    await refreshToken()
 
-  await loginKintai()
-
-  await checkin()
-    .then(dataObj => {
-      if (dataObj.success) {
-        // Notify
-        notify('✅Notification', 'You have been checked in')
-      }
-    })
+    await checkin()
+      .then(dataObj => {
+        if (dataObj.success) {
+          // Notify
+          notify('✅Notification', 'You have been checked in')
+        }
+      })
+  } catch(e) {}
 }
 
 async function checkOutHandler() {
@@ -55,17 +69,17 @@ async function checkOutHandler() {
 
   if (now.getHours() < 17) {
     if (confirm('Đang trong thời gian làm việc, bạn chắc chứ!!!')) {
-      await login()
+      try {
+        await refreshToken()
 
-      await loginKintai()
-
-      await checkout()
-        .then(dataObj => {
-          if (dataObj.success) {
-            // Notify
-            notify('✅Notification', 'You have been checked out')
-          }
-        })
+        await checkout()
+          .then(dataObj => {
+            if (dataObj.success) {
+              // Notify
+              notify('✅Notification', 'You have been checked out')
+            }
+          })
+      } catch(e) {}
     }
   }
 }
