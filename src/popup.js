@@ -59,9 +59,21 @@ async function checkInHandler() {
         if (dataObj.success) {
           // Notify
           notify('✅Notification', 'You have been checked in')
+        } else {
+          notify('⛔Error', 'Fail to check in')
         }
       })
-  } catch(e) {}
+  } catch(e) {
+    // Notify
+    notify('⛔Error', 'Fail to check in')
+  }
+
+  // Sync kintai status
+  try {
+    await syncKintaiStatus()
+  } catch (error) {
+    // Ignore error
+  }
 }
 
 async function checkOutHandler() {
@@ -77,9 +89,21 @@ async function checkOutHandler() {
             if (dataObj.success) {
               // Notify
               notify('✅Notification', 'You have been checked out')
+            } else {
+              notify('⛔Error', 'Fail to check out')
             }
           })
-      } catch(e) {}
+      } catch(e) {
+        // Notify
+        notify('⛔Error', 'Fail to check out')
+      }
+
+      // Sync kintai status
+      try {
+        await syncKintaiStatus()
+      } catch (error) {
+        // Ignore error
+      }
     }
   }
 }
