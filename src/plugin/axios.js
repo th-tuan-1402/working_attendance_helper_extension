@@ -13,6 +13,9 @@ async function requestHandler(config) {
 
   config.headers.Authorization = 'Bearer ' + apiToken
 
+  // Set timeout as 10 minutes
+  config.timeout = 600000
+
   return config
 }
 
