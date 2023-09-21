@@ -20,8 +20,85 @@ import { getStorageItem, notify } from './ChromeApiHelper';
     timeLabel.innerText = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
   }, 1000)
 
+  await updateStatus(true)
+})();
+
+async function onCheckIn() {
+  let isSucceeded = false
+
   try {
     await refreshToken()
+
+    await checkin()
+      .then(dataObj => {
+        if (dataObj.success) {
+          // Notify
+          notify('✅Notification', 'You have been checked in')
+        } else {
+          notify('⛔Error', 'Fail to check in')
+        }
+      })
+
+    isSucceeded = true
+  } catch(e) {
+    // Notify
+    notify('⛔Error', 'Fail to check in')
+  }
+
+  // Sync kintai status
+  if (isSucceeded) {
+    try {
+      await updateStatus()
+    } catch (error) {
+      // Ignore error
+    }
+  }
+}
+
+async function onCheckOut() {
+  const now = new Date()
+
+  if (now.getHours() < 17) {
+    if (!confirm('Đang trong thời gian làm việc, bạn chắc chứ!!!')) {
+      return
+    }
+  }
+
+  let isSucceeded = false
+  try {
+    await refreshToken()
+
+    await checkout()
+      .then(dataObj => {
+        if (dataObj.success) {
+          // Notify
+          notify('✅Notification', 'You have been checked out')
+        } else {
+          notify('⛔Error', 'Fail to check out')
+        }
+      })
+
+      isSucceeded = true
+  } catch(e) {
+    // Notify
+    notify('⛔Error', 'Fail to check out')
+  }
+
+  // Sync kintai status
+  if (isSucceeded) {
+    try {
+      await updateStatus()
+    } catch (error) {
+      // Ignore error
+    }
+  }
+}
+
+async function updateStatus(shouldRefreshToken=false) {
+  try {
+    if (shouldRefreshToken) {
+      await refreshToken()
+    }
     await syncKintaiStatus()
 
     // Set change kintai status
@@ -47,63 +124,5 @@ import { getStorageItem, notify } from './ChromeApiHelper';
     const errMsg = document.getElementById('errMsg')
     errMsg.innerText = "⛔Đồng bộ thất bại"
     errMsg.classList.remove('hidden')
-  }
-})();
-
-async function onCheckIn() {
-  try {
-    await refreshToken()
-
-    await checkin()
-      .then(dataObj => {
-        if (dataObj.success) {
-          // Notify
-          notify('✅Notification', 'You have been checked in')
-        } else {
-          notify('⛔Error', 'Fail to check in')
-        }
-      })
-  } catch(e) {
-    // Notify
-    notify('⛔Error', 'Fail to check in')
-  }
-
-  // Sync kintai status
-  try {
-    await syncKintaiStatus()
-  } catch (error) {
-    // Ignore error
-  }
-}
-
-async function onCheckOut() {
-  const now = new Date()
-
-  if (now.getHours() < 17) {
-    if (confirm('Đang trong thời gian làm việc, bạn chắc chứ!!!')) {
-      try {
-        await refreshToken()
-
-        await checkout()
-          .then(dataObj => {
-            if (dataObj.success) {
-              // Notify
-              notify('✅Notification', 'You have been checked out')
-            } else {
-              notify('⛔Error', 'Fail to check out')
-            }
-          })
-      } catch(e) {
-        // Notify
-        notify('⛔Error', 'Fail to check out')
-      }
-
-      // Sync kintai status
-      try {
-        await syncKintaiStatus()
-      } catch (error) {
-        // Ignore error
-      }
-    }
   }
 }
