@@ -1,4 +1,4 @@
-import { getStorageItem, setStorageItem } from "./ChromeApiHelper";
+import { getStorageItem, setStorageItem } from "./helpers/ChromeHelper";
 
 (async function () {
     // Init display
