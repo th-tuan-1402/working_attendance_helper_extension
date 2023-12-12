@@ -1,6 +1,3 @@
-import axios from '../../plugin/axios'
-import { getStorageItem } from '../../helpers/ChromeHelper'
-
 const HITO_DOMAIN = 'https://hito.lampart-vn.com'
 const HITO_KINTAI_DOMAIN = 'https://backend-kintai-hito.lampart-vn.com'
 
@@ -11,33 +8,8 @@ export default {
     API_KINTAI_LOGIN: HITO_KINTAI_DOMAIN + '/api/v1/user/login',
     API_KINTAI_STATUS: HITO_KINTAI_DOMAIN + '/api/v1/timestamp/clock',
 
-    // Check token
-    async isValidToken() {
-        console.log('api isValidToken start');
-
-        const isValid = await new Promise((resolve, reject) => {
-            let isValid = false;
-
-            axios.get(this.API_CHECK_TOKEN)
-                .then(res => {
-                    // If It has data => token is valid
-                    // Otherwise      => token is invalid
-                    isValid = res.status == 200 && res.data.success
-
-                    resolve(isValid)
-                })
-                .catch(err => resolve(isValid))
-        })
-
-        console.log('api isValidToken end');
-
-        return isValid
-    },
-
     // Login
-    async login(params) {
-        console.log('api login start');
-
+    async login({ axios }, params) {
         return new Promise(async (resolve, reject) => {
             let data = {
                 success: false,
@@ -45,25 +17,16 @@ export default {
             }
 
             await axios.post(this.API_LOGIN, params)
-                        .then(res => {
-                            data = res.data
-                            resolve(data)
-                        })
-                        .catch(e => reject(e))
+                .then(res => {
+                    data = res.data
+                    resolve(data)
+                })
+                .catch(e => reject(e))
         })
-
-        console.log('api login end');
     },
 
     // Login kintai
-    async loginKintai() {
-        console.log('api login kintai start');
-
-        let params = {
-            locale: 'vi',
-            token: await getStorageItem('apiToken')
-        }
-
+    async loginKintai({ axios }, params) {
         return new Promise(async (resolve, reject) => {
             let data = {
                 success: false,
@@ -77,15 +40,11 @@ export default {
                 })
                 .catch(e => reject(e))
         })
-
-        console.log('api login kintai end');
     },
 
     // Get kintai status
-    async getKintaiStatus() {
-        console.log('api get kintai status start');
-
-        const result = await new Promise((resolve, reject) => {
+    async getKintaiStatus({ axios }) {
+        return await new Promise((resolve, reject) => {
             let data = {
                 success: false,
                 data: null
@@ -98,16 +57,11 @@ export default {
                 })
                 .catch(e => Promise.reject(e))
         })
-
-        console.log('api get kintai status end');
-        return result
     },
 
     // Change kintai status
-    async changeKintaiStatus(params) {
-        console.log('api change kintai status start');
-
-        const result = await new Promise((resolve, reject) => {
+    async changeKintaiStatus({ axios }, params) {
+        return await new Promise((resolve, reject) => {
             let data = {
                 success: false,
                 data: null
@@ -128,8 +82,5 @@ export default {
                     reject(err)
                 })
         })
-
-        console.log('api change kintai status end');
-        return result
     }
 }
