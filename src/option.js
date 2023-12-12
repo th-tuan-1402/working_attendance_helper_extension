@@ -1,48 +1,48 @@
 import ChromeHelper from "./helpers/ChromeHelper";
 
 (async function () {
-    const { getStorageItem, setStorageItem } = new ChromeHelper(chrome);
+    const chromeHelper = new ChromeHelper(chrome)
 
     // User name
     const usernameInp = document.getElementById('username')
-    const username = await getStorageItem('username') ?? ''
+    const username = await chromeHelper.getStorageItem('username') ?? ''
     usernameInp.value = username
 
     // Password
     const passwordInp = document.getElementById('password')
-    let password = await getStorageItem('password') ?? ''
+    let password = await chromeHelper.getStorageItem('password') ?? ''
     passwordInp.value = password
 
     // isAutoCheckIn
     const chkIsAutoCheckIn = document.getElementById('isAutoCheckIn')
-    let isAutoCheckIn = await getStorageItem('isAutoCheckIn') ?? false
+    let isAutoCheckIn = await chromeHelper.getStorageItem('isAutoCheckIn') ?? false
     if (isAutoCheckIn) {
         chkIsAutoCheckIn?.setAttribute('checked', 'checked')
     }
 
     // isAutoCheckOut
     const chkIsAutoCheckOut = document.getElementById('isAutoCheckOut')
-    let isAutoCheckOut = await getStorageItem('isAutoCheckOut') ?? false
+    let isAutoCheckOut = await chromeHelper.getStorageItem('isAutoCheckOut') ?? false
     if (isAutoCheckOut) {
         chkIsAutoCheckOut?.setAttribute('checked', 'checked')
     }
 
     // Add event listeners
     usernameInp?.addEventListener('change', async (e) => {
-        await setStorageItem({ username: usernameInp.value })
+        await chromeHelper.setStorageItem({ username: usernameInp.value })
     })
 
     passwordInp?.addEventListener('change', async (e) => {
-        await setStorageItem({ password: passwordInp.value })
+        await chromeHelper.setStorageItem({ password: passwordInp.value })
     })
 
     chkIsAutoCheckIn?.addEventListener('change', async () => {
         const value = chkIsAutoCheckIn.checked
-        await setStorageItem({ isAutoCheckIn: value })
+        await chromeHelper.setStorageItem({ isAutoCheckIn: value })
     })
 
     chkIsAutoCheckOut?.addEventListener('change', async () => {
         const value = chkIsAutoCheckOut.checked
-        await setStorageItem({ isAutoCheckOut: value })
+        await chromeHelper.setStorageItem({ isAutoCheckOut: value })
     })
 })()
