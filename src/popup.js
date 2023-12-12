@@ -1,8 +1,11 @@
-import PopupController from './controllers/PopupController';
-import { getStorageItem, notify } from './helpers/ChromeHelper';
+import ChromeHelper from './helpers/ChromeHelper';
 import api from './scripts/api/hitoApi'
+import { install } from './plugin/axios';
+import PopupController from './controllers/PopupController';
 
-const controller = new PopupController(api);
+const chromeHelper = new ChromeHelper(chrome);
+const axios = install({ chromeHelper })
+const controller = new PopupController({ api, axios, chromeHelper });
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
 (async function initPopupWindow() {
@@ -50,8 +53,8 @@ function showSaveButton() {
 
 async function updateSaveButtonLabel() {
   // Set change kintai status
-  const isCheckedIn = await getStorageItem('isCheckedIn')
-  const isCheckedOut = await getStorageItem('isCheckedOut')
+  const isCheckedIn = await chromeHelper.getStorageItem('isCheckedIn')
+  const isCheckedOut = await chromeHelper.getStorageItem('isCheckedOut')
   const btnChangeStatus = document.getElementById('btnChangeStatus')
 
   if (!isCheckedIn) {
@@ -84,16 +87,16 @@ async function onCheckIn() {
       .then(dataObj => {
         if (dataObj.success) {
           // Notify
-          notify('✅Notification', 'You have been checked in')
+          chromeHelper.notify('✅Notification', 'You have been checked in')
         } else {
-          notify('⛔Error', 'Fail to check in')
+          chromeHelper.notify('⛔Error', 'Fail to check in')
         }
       })
 
     isSucceeded = true
   } catch (e) {
     // Notify
-    notify('⛔Error', 'Fail to check in')
+    chromeHelper.notify('⛔Error', 'Fail to check in')
   }
 
   // Sync kintai status
@@ -122,16 +125,16 @@ async function onCheckOut() {
     await controller.checkOut()
       .then(dataObj => {
         if (dataObj.success) {
-          notify('✅Notification', 'You have been checked out')
+          chromeHelper.notify('✅Notification', 'You have been checked out')
         } else {
-          notify('⛔Error', 'Fail to check out')
+          chromeHelper.notify('⛔Error', 'Fail to check out')
         }
       })
 
     isSucceeded = true
   } catch (e) {
     // Notify
-    notify('⛔Error', 'Fail to check out')
+    chromeHelper.notify('⛔Error', 'Fail to check out')
   }
 
   // Sync kintai status
