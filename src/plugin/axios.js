@@ -1,5 +1,5 @@
 import axios from "axios"
-import { getStorageItem } from "../ChromeApiHelper";
+import { getStorageItem } from "../helpers/ChromeHelper";
 
 // Set config defaults when creating the instance
 const instance = axios.create({});
