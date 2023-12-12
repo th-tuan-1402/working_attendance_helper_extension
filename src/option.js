@@ -1,7 +1,7 @@
-import { getStorageItem, setStorageItem } from "./helpers/ChromeHelper";
+import ChromeHelper from "./helpers/ChromeHelper";
 
 (async function () {
-    // Init display
+    const { getStorageItem, setStorageItem } = new ChromeHelper(chrome);
 
     // User name
     const usernameInp = document.getElementById('username')
@@ -29,20 +29,20 @@ import { getStorageItem, setStorageItem } from "./helpers/ChromeHelper";
 
     // Add event listeners
     usernameInp?.addEventListener('change', async (e) => {
-        await setStorageItem({username: usernameInp.value})
+        await setStorageItem({ username: usernameInp.value })
     })
 
     passwordInp?.addEventListener('change', async (e) => {
-        await setStorageItem({password: passwordInp.value})
+        await setStorageItem({ password: passwordInp.value })
     })
 
     chkIsAutoCheckIn?.addEventListener('change', async () => {
         const value = chkIsAutoCheckIn.checked
-        await setStorageItem({isAutoCheckIn: value})
+        await setStorageItem({ isAutoCheckIn: value })
     })
 
     chkIsAutoCheckOut?.addEventListener('change', async () => {
         const value = chkIsAutoCheckOut.checked
-        await setStorageItem({isAutoCheckOut: value})
+        await setStorageItem({ isAutoCheckOut: value })
     })
 })()
