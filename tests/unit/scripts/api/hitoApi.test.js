@@ -1,4 +1,4 @@
-import hitoApi from '../src/scripts/api/hitoApi'
+import hitoApi from "../../../../src/scripts/api/hitoApi"
 
 describe('test call api ok', function () {
 	test('test login - success', async function () {
