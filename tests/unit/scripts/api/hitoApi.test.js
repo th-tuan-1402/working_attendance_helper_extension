@@ -14,6 +14,7 @@ describe('test call api ok', function () {
 		const result = (await hitoApi.login({ axios: mockedAxios }))
 		expect(result).toBe(dataObj.data);
 	})
+
 	test('test login - fail - exception occursion', async function () {
 		let err = { 'exception': 'testException' }
 		let mockedAxios = {
@@ -63,7 +64,6 @@ describe('test call api ok', function () {
 		const result = (await hitoApi.getKintaiStatus({ axios: mockedAxios }))
 		expect(result).toBe(dataObj.data);
 	})
-
 
 	test('test get kintai status - fail - exception occursion', async function () {
 		let err = { 'exception': 'testException' }
