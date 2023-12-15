@@ -55,7 +55,7 @@ export default {
                     data = res.data
                     resolve(data)
                 })
-                .catch(e => Promise.reject(e))
+                .catch(e => reject(e))
         })
     },
 
