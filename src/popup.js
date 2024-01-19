@@ -144,6 +144,7 @@ async function onCheckOut() {
             await controller.approveWorking()
         }
     } catch (e) {
+        console.error(e)
         // Warning
         chromeHelper.notify('⚠️Warnning', 'Fail to approve working time')
     }

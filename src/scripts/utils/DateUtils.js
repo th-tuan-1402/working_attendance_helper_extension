@@ -1,4 +1,4 @@
-export default class DateUtil {
+export default class DateUtils {
   /**
    * Get current date
    * @returns Date
