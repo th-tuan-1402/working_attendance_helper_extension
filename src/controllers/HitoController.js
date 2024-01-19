@@ -29,6 +29,8 @@ export default class HitoController {
 
       // Get kintai status
     } else if (await this.shouldCheckOut(now)) {
+      let isSucceeded = false;
+
       try {
         await this.refreshToken(this)
 
@@ -40,10 +42,24 @@ export default class HitoController {
               this.chromeHelper.notify('✅Notification', 'You have been checked out', HTIO_KINTAI_URL)
             }
           })
-
         await this.syncKintaiStatus(this)
+
+        isSucceeded = true
       } catch (e) {
 
+      }
+
+      if (isSucceeded) {
+        try {
+            let isAutoConfirmWorkingTime = await chromeHelper.getStorageItem('isAutoConfirmWorkingTime')
+            if (isAutoConfirmWorkingTime) {
+                await controller.approveWorking()
+            }
+        } catch (e) {
+            console.error(e)
+            // Warning
+            chromeHelper.notify('⚠️Warnning', 'Fail to approve working time')
+        }
       }
     }
   }
@@ -214,5 +230,24 @@ export default class HitoController {
     }
 
     return true
+  }
+
+  /**
+   * Approve working time
+   * @returns
+   */
+  async approveWorking() {
+    let params = {
+        date_log: DateUtil.formatHyphen(DateUtil.getCurrentDate()),
+        employee_id: '367',
+        prev_time_log: null,
+        button_status: 'button_accept',
+    }
+
+    let dataObj = await this.api.approveWorking(this, params)
+    if (dataObj.success) {
+    }
+
+    return dataObj
   }
 }

@@ -1,3 +1,5 @@
+import DateUtils from "../scripts/utils/DateUtils";
+
 export default class PopupController {
     constructor({ api, axios, chromeHelper }) {
         this.api = api;
@@ -179,7 +181,7 @@ export default class PopupController {
      */
     async approveWorking() {
         let params = {
-            date_log: DateUtil.formatHyphen(DateUtil.getCurrentDate()),
+            date_log: DateUtil.formatHyphen(DateUtils.getCurrentDate()),
             employee_id: '367',
             prev_time_log: null,
             button_status: 'button_accept',
