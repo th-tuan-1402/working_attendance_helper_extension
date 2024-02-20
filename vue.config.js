@@ -1,29 +1,29 @@
 const { defineConfig } = require('@vue/cli-service')
+const path = require('path')
 module.exports = defineConfig({
   transpileDependencies: true,
-
+  filenameHashing: false,
+  productionSourceMap: false,
   pages: {
     option: {
-      // entry for the page
       entry: 'src/pages/option/main.ts',
-      // the source template
-      // template: 'src/pages/option/index.html',
-      // output as dist/index.html
-      filename: 'option.html',
-      // when using title option,
-      // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
-      title: 'Option'
-      // chunks to include on this page, by default includes
-      // extracted common chunks and vendor chunks.
-      // chunks: ['chunk-vendors', 'chunk-common', 'index']
+      filename: 'option.html'
+    },
+    popup: {
+      entry: 'src/pages/popup/main.ts',
+      filename: 'popup.html'
     }
-    // when using the entry-only string format,
-    // template is inferred to be `public/subpage.html`
-    // and falls back to `public/index.html` if not found.
-    // Output filename is inferred to be `subpage.html`.
-    // subpage: 'src/subpage/main.js'
   },
-
+  configureWebpack: {
+    entry: {
+      'content-script': './src/scripts/workers/content.ts',
+      background: './src/scripts/workers/background.ts'
+    },
+    output: {
+      filename: 'js/[name].js',
+      clean: true
+    }
+  },
   pluginOptions: {
     vuetify: {}
   }
