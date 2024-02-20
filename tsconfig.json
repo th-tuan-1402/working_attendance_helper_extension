@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "noImplicitAny": false,
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -34,11 +35,14 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "src/scripts/controller/controllers/HitoController.ts"
   ],
   "exclude": [
     "node_modules"
   ],
   // Các file dùng để defined global type cho dự án
-  "files": ["src/types/*"],
+  "files": [
+    "src/types/*"
+  ],
 }
