@@ -1,4 +1,3 @@
-import { UserCredential } from '@/types/global'
 import AppContext from '../lib/core/AppContext'
 import commonConstants from '../common/commonConstants'
 import DateTimeUtils from '../lib/utils/DateTimeUtils'

@@ -1,5 +1,4 @@
 import AppContext from '@/scripts/lib/core/AppContext'
-import { UserCredential } from '@/types/global'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 

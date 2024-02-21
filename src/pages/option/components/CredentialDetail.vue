@@ -8,7 +8,6 @@ let emit = defineEmits<{
 
 // stores
 import { computed } from "vue";
-import { UserCredential } from "@/types/global";
 let isShowContent = computed(() => model.value != null);
 let onSaveUser = () => {
   emit("update", model.value);
