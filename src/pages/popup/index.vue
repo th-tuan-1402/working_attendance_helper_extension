@@ -2,7 +2,6 @@
 import { onMounted, ref, reactive, computed } from "vue";
 import ChangeStatusButton from "@/pages/popup/components/ChangeStatusButton.vue";
 import Timer from "@/pages/popup/components/Timer.vue";
-import { UserCredential } from "@/types/global";
 import commonConstants from "@/scripts/common/commonConstants";
 import { default as api } from "@/scripts/api/hitoApi";
 

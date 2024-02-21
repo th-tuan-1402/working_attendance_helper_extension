@@ -2,8 +2,6 @@
 // Import components
 import CredentialList from "@/pages/option/components/CredentialList.vue";
 import CredentialDetail from "@/pages/option/components/CredentialDetail.vue";
-
-import { UserCredential } from "@/types/global";
 import { computed, reactive, ref, onMounted } from "vue";
 
 // App context

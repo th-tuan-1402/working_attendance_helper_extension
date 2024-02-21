@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { defineModel, reactive, computed } from "vue";
-import { UserCredential } from "@/types/global";
 
 let emit = defineEmits<{
   (e: "onCheckIn", credential: UserCredential): void;
