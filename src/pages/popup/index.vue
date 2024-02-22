@@ -7,11 +7,16 @@ import { default as api } from "@/scripts/api/hitoApi";
 
 // Injection
 import AppContext from "@/scripts/lib/core/AppContext";
-import DateTimeUtils from '../../scripts/lib/utils/DateTimeUtils';
+import DateTimeUtils from "../../scripts/lib/utils/DateTimeUtils";
 const appCtx = AppContext.getInstance();
-let libs = appCtx.makeMany(["logger", "useCredentialStore", "chromeHelper"]);
+let libs = appCtx.makeMany([
+  "logger",
+  "useCredentialStore",
+  "chromeHelper",
+  "localStorage",
+]);
 
-const { logger, useCredentialStore, chromeHelper } = libs;
+const { logger, useCredentialStore, chromeHelper, localStorage } = libs;
 function error(message: string, err?: unknown) {
   logger.error(constants.TITLE_ERROR + " - " + message, err);
 }
@@ -61,43 +66,27 @@ function showErrorMessage(msg: string, timeout: number = 5000) {
 
 let credentialStore = useCredentialStore();
 let users = computed(() => credentialStore.credentials);
-let authenticatedUser = computed(() =>
-  users.value.filter((item: UserCredential) => item.accessToken)
-);
 let isAuthenticated = computed(() => (user: UserCredential) => !!user.accessToken);
 onMounted(async () => {
   // Restore credentials
-  const saveData = await localStorage.getItem("credentials");
-  let credentials = saveData != null ? JSON.parse(saveData) : [];
-  credentialStore.setCredentialList(credentials);
+  await credentialStore.init();
 
-  // Fectch kintai status
-  users.value.forEach((element: UserCredential) => {
-    fetchKintaiStatus(element, true);
-  });
+  // Fetch kintai status
+  for (let index in users.value) {
+    let element = users.value[index];
+
+    if (!(await checkKintaiToken(element))) {
+      await onRefreshToken(element);
+    }
+
+    await onSyncStatus(element);
+  }
 });
 
 // Change kintai status button
 let isShowChangeKintaiStatusBtn = computed(() => (user: UserCredential) =>
   isAuthenticated.value(user)
 );
-
-async function fetchKintaiStatus(credential: UserCredential, shouldRefreshToken = false) {
-  let isSucceeded = true;
-  if (shouldRefreshToken) {
-    isSucceeded = await onRefreshToken(credential);
-  }
-
-  if (isSucceeded) {
-    try {
-      isSucceeded = await onSyncStatus(credential);
-    } catch (err) {
-      error(constants.MSG_ERROR_SYNC_DATA, err);
-    }
-  }
-
-  return isSucceeded;
-}
 
 function notifySuccess(msg: string, url?: string) {
   chromeHelper.notify(constants.TITLE_SUCCESS, msg, url);
@@ -116,7 +105,7 @@ let isShowCredentialList = computed(() => credentialStore.credentials.length > 0
 async function onCheckIn(credential: UserCredential) {
   let isSucceeded = false;
   try {
-    isSucceeded = await onRefreshToken(credential).then(() => checkIn(credential));
+    isSucceeded = await checkIn(credential);
   } catch (e) {
     notifyError(constants.MSG_ERROR_FAIL_CHECKIN);
   }
@@ -124,7 +113,7 @@ async function onCheckIn(credential: UserCredential) {
   // Sync kintai status
   if (isSucceeded) {
     notifySuccess(constants.MSG_INFO_SUCCESS_CHECKIN, constants.URL_HITO_KINTAI);
-    await fetchKintaiStatus(credential);
+    await onSyncStatus(credential);
   }
 }
 
@@ -145,7 +134,7 @@ async function onCheckOut(credential: UserCredential) {
   let isSucceeded = false;
   {
     try {
-      isSucceeded = await onRefreshToken(credential).then(() => checkOut(credential));
+      isSucceeded = await checkOut(credential);
     } catch (e) {
       notifyError(constants.MSG_ERROR_FAIL_CHECKOUT);
     }
@@ -158,7 +147,7 @@ async function onCheckOut(credential: UserCredential) {
       await onApproveWorking(credential);
     }
 
-    await fetchKintaiStatus(credential);
+    await onSyncStatus(credential);
   }
 }
 
@@ -193,12 +182,12 @@ async function onSyncStatus(credential: UserCredential) {
 }
 
 /**
- * Approve working event handler 
+ * Approve working event handler
  */
 async function onApproveWorking(credential: UserCredential) {
   let isSucceeded = false;
   try {
-    isSucceeded = await approveWorking(credential)
+    isSucceeded = await approveWorking(credential);
   } catch (err) {
     warn(constants.MSG_ERROR_APPROVED_WORKING, err);
   }
@@ -208,6 +197,20 @@ async function onApproveWorking(credential: UserCredential) {
 //**********************************
 //*    Common async function       *
 //**********************************
+async function checkKintaiToken(credential: UserCredential) {
+  let isSucceeded = true;
+
+  try {
+    let params = {
+      accessToken: credential.accessKintaiToken,
+    };
+    isSucceeded = (await api.checkKintaiToken(params)).success;
+  } catch (err) {
+    error(constants.MSG_ERROR_SYNC_DATA, err);
+  }
+
+  return isSucceeded;
+}
 
 async function refreshToken(credential: UserCredential) {
   let isSucceeded = false;
@@ -218,6 +221,7 @@ async function refreshToken(credential: UserCredential) {
       await login(credential);
       await loginKintai(credential);
       isSucceeded = true;
+      credentialStore.commit();
     } catch (err) {
       error(constants.MSG_ERROR_SYNC_DATA, err);
     }

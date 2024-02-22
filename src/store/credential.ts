@@ -1,3 +1,4 @@
+import LocalStorage from '@/plugins/LocalStorage'
 import AppContext from '@/scripts/lib/core/AppContext'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
@@ -5,7 +6,7 @@ import { ref, computed } from 'vue'
 export const useCredentialStore = defineStore('credential', () => {
   // local storage
   const appCtx = AppContext.getInstance()
-  const localStorage = appCtx.make('localStorage')
+  const localStorage: LocalStorage = appCtx.make('localStorage')
 
   // State
   const credentials = ref<Array<UserCredential>>([])
@@ -26,9 +27,13 @@ export const useCredentialStore = defineStore('credential', () => {
   function deleteCredentialByIndex(index: number) {
     credentials.value.splice(index, 1)
   }
-
+  async function init() {
+    // Restore credentials
+    let saveData = (await localStorage.getArray("credentials")) ?? [];
+    credentials.value = saveData
+  }
   async function commit() {
-    await localStorage.setItem({ credentials: credentials.value })
+    await localStorage.setArray({ credentials: credentials.value })
   }
 
   return {
@@ -38,6 +43,7 @@ export const useCredentialStore = defineStore('credential', () => {
     setCredentialList,
     addCredential,
     deleteCredentialByIndex,
-    commit
+    commit,
+    init
   }
 })

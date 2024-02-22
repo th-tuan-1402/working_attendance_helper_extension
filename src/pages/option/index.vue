@@ -6,6 +6,7 @@ import { computed, reactive, ref, onMounted } from "vue";
 
 // App context
 import AppContext from "@/scripts/lib/core/AppContext";
+import LocalStorage from "@/plugins/LocalStorage";
 let appCtx = AppContext.getInstance();
 
 // Persistent save
@@ -13,11 +14,8 @@ let useCredentialStore = appCtx.make("useCredentialStore");
 let credentialStore = useCredentialStore();
 
 // Vue hooks
-let localStorage = appCtx.make("localStorage");
 onMounted(async () => {
-  const saveData = await localStorage.getItem("credentials");
-  const credentials = saveData != null ? JSON.parse(saveData) : [];
-  credentialStore.setCredentialList(credentials);
+  await credentialStore.init();
 });
 
 // Screen control

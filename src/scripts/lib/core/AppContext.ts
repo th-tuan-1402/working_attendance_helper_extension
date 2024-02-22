@@ -28,23 +28,33 @@ export default class AppContext {
 
   public init(): void {
     const getLocalStorage = () => {
-      const mockChromeLocalStorage = {
-        async get(keys: Array<string>) {
-          return { credentials: localStorage.getItem('credentials') }
-        },
-        async set(saveData: SaveData) {
-          localStorage.setItem('credentials', JSON.stringify(saveData.credentials))
-        },
-        async remove() { }
+      this.bind('chrome', window?.chrome ?? null)
+
+      let localStorage = null;
+
+      const chrome = this.resolve('chrome')
+      if (chrome) {
+        localStorage = new LocalStorage(chrome.storage.local)
+      } else {
+        const mockChromeLocalStorage = {
+          async get(keys: Array<string>) {
+            return { credentials: localStorage.getItem('credentials') }
+          },
+          async set(saveData: SaveData) {
+            localStorage.setItem('credentials', JSON.stringify(saveData.credentials))
+          },
+          async remove() { }
+        }
+        localStorage = new LocalStorage(mockChromeLocalStorage)
       }
-      const store = new LocalStorage(mockChromeLocalStorage)
-      return store
+
+      return localStorage
     }
     this.bind('localStorage', getLocalStorage())
 
     const credentials = (async () => {
       const localStorage = this.make('localStorage')
-      return localStorage.getItem('credentials')
+      return localStorage.getItem('credentials') ?? []
     })()
     this.bind('credentials', credentials)
 
@@ -54,7 +64,6 @@ export default class AppContext {
     }
     this.bind('logger', getMockLogger())
 
-    this.bind('chrome', window?.chrome ?? null)
     const getChromeHelper = () => {
       const chrome = this.resolve('chrome')
 

@@ -8,6 +8,7 @@ export default {
   // API Url
   API_CHECK_TOKEN: HITO_DOMAIN + '/backend/v1/check_token',
   API_LOGIN: HITO_DOMAIN + '/backend/v1/login',
+  API_KINTAI_CHECK_EXPIRED: HITO_KINTAI_DOMAIN + '/api/v1/user/check-expires',
   API_KINTAI_LOGIN: HITO_KINTAI_DOMAIN + '/api/v1/user/login',
   API_KINTAI_STATUS: HITO_KINTAI_DOMAIN + '/api/v1/timestamp/clock',
   API_KINTAI_APPROVE_WORKING: HITO_KINTAI_DOMAIN + '/api/v1/timestamp/working-time/works/approve-working',
@@ -22,6 +23,24 @@ export default {
 
       await axios
         .post(this.API_LOGIN, params)
+        .then((res) => {
+          data = res.data
+          resolve(data)
+        })
+        .catch((e) => reject(e))
+    })
+  },
+
+  // Check token expiration
+  async checkKintaiToken(params: RequestParam): Promise<ApiResponse> {
+    return await new Promise((resolve, reject) => {
+      let data: ApiResponse = {
+        success: false,
+        data: null
+      }
+
+      axios
+        .get(this.API_KINTAI_CHECK_EXPIRED, { accessToken: params.accessToken } as AxiosRequestConfig<string>)
         .then((res) => {
           data = res.data
           resolve(data)
