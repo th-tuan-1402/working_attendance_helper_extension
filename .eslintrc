@@ -19,15 +19,15 @@
       {
         "arrowParent": "always",
         "semi": false,
-        "trailingComma": "none",
+        "trailingComma": "auto",
         "tabWidth": 2,
         "endOfLine": "auto",
         "useTabs": false,
         "singleQuote": true,
         "printWidth": 120,
-        "jsxSingleQuote": true,
+        "jsxSingleQuote": true
       },
     ],
-    "prefer-const": "off",
+    "prefer-const": "off"
   }
 }

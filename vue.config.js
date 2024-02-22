@@ -1,13 +1,15 @@
 const { defineConfig } = require('@vue/cli-service')
 const path = require('path')
+const isDev = process.env.NODE_ENV !== 'production'
+
 module.exports = defineConfig({
   transpileDependencies: true,
   filenameHashing: false,
-  productionSourceMap: false,
+  productionSourceMap: isDev,
   pages: {
     option: {
       entry: 'src/pages/option/main.ts',
-      filename: 'option.html'
+      filename: 'option.html',
     },
     popup: {
       entry: 'src/pages/popup/main.ts',
@@ -17,12 +19,15 @@ module.exports = defineConfig({
   configureWebpack: {
     entry: {
       'content-script': './src/scripts/workers/content.ts',
-      background: './src/scripts/workers/background.ts'
+      background: './src/scripts/workers/background.ts',
     },
     output: {
       filename: 'js/[name].js',
-      clean: true
-    }
+      clean: true,
+    },
+    optimization: {
+      minimize: false,
+    },
   },
   pluginOptions: {
     vuetify: {}
