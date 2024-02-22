@@ -3,7 +3,7 @@ import { ref } from "vue";
 import DateTimeUtils from "../../../scripts/lib/utils/DateTimeUtils";
 
 setInterval(updateClockLabel, 1000);
-let currentTime = ref("");
+let currentTime = ref("00:00:00");
 // Update current time
 function updateClockLabel() {
   currentTime.value = DateTimeUtils.getCurrentTimeAsString();
