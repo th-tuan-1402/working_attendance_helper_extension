@@ -34,7 +34,7 @@ export default class AppContext {
       let localStorage = null;
 
       const chrome = this.resolve('chrome')
-      if (chrome) {
+      if (chrome.storage) {
         localStorage = new LocalStorage(chrome.storage.local)
       } else {
         const mockChromeLocalStorage = {
