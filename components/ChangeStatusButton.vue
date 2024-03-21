@@ -10,8 +10,8 @@ const constants = reactive({
   KINTAI_WORKING_STATUS_CODE: 1,
   KINTAI_CHECKIN_STATUS_CODE: 2,
   KINTAI_CHECKOUT_STATUS_CODE: 3,
-  KINTAI_CHECKIN_ICON: "mdi-login",
-  KINTAI_CHECKOUT_ICON: "mdi-logout",
+  KINTAI_CHECKIN_ICON: "mdi:mdi-login",
+  KINTAI_CHECKOUT_ICON: "mdi:mdi-logout",
 });
 
 let model = defineModel({ type: Object });
