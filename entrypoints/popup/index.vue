@@ -90,7 +90,6 @@ let isShowChangeKintaiStatusBtn = computed(() => (user: UserCredential) =>
   isAuthenticated.value(user)
 );
 
-
 /**
  * Show notification with success message
  * @param msg Notification message
@@ -389,7 +388,7 @@ async function approveWorking(credential: UserCredential) {
                 class="flex gap-x-5 justify-center"
               >
                 <div>
-                  <v-icon size="small" icon="mdi-account"></v-icon>
+                  <v-icon size="small" icon="mdi:mdi-account"></v-icon>
 
                   {{ credential.userName }}
                 </div>
@@ -403,7 +402,7 @@ async function approveWorking(credential: UserCredential) {
                 <div v-if="!isAuthenticated(credential)">
                   <v-tooltip :text="constants.MSG_ERROR_SYNC_DATA">
                     <template v-slot:activator="{ props }">
-                      <v-icon size="small" icon="mdi-alert-circle" class="text-red-800">
+                      <v-icon size="small" icon="mdi:mdi-alert-circle" class="text-red-800">
                       </v-icon>
                     </template>
                   </v-tooltip>

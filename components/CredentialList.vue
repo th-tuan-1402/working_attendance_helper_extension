@@ -65,7 +65,7 @@ let onDeleteUser = (index: number) => {
                 v-show="isShowActionBtn"
                 color="blue"
                 variant="plain"
-                icon="mdi-square-edit-outline"
+                icon="mdi:mdi-square-edit-outline"
                 class="text-sm font-medium"
                 @click="onEditUser(index)"
               >
@@ -74,7 +74,7 @@ let onDeleteUser = (index: number) => {
                 v-show="isShowActionBtn"
                 color="red"
                 variant="plain"
-                icon="mdi-trash-can"
+                icon="mdi:mdi-trash-can"
                 class="text-sm font-medium"
                 @click="onDeleteUser(index)"
               >
