@@ -13,12 +13,14 @@ export default defineConfig({
   }),
   manifest: {
     "name": "Hito Kintai Helper",
-    "version": "1.0",
+    "version": "1.1.0",
     "description": "Auto perform check in/out process in time",
     "permissions": [
       "cookies",
       "storage",
-      "notifications"
+      "notifications",
+      "alarms",
+      "tabs"
     ],
     "host_permissions": [
       "<all_urls>"
