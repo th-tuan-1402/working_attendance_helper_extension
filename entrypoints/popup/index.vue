@@ -358,6 +358,7 @@ async function approveWorking(credential: UserCredential) {
       employee_id: credential.userId,
       prev_time_log: null,
       button_status: "button_accept",
+      accessToken: credential.accessKintaiToken,
     };
     let dataObj = await api.approveWorking(params);
     isSucceeded = dataObj.success;
