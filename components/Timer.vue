@@ -15,4 +15,4 @@ function updateClockLabel() {
       {{ currentTime }}
     </div>
   </div>
-</template>../scripts/lib/utils/DateTimeUtils
+</template>
