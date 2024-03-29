@@ -1,4 +1,4 @@
-import { loop } from "@/scripts/controller/hitoController";
+import { loop, changeKintaiStatusWithinTime } from "@/scripts/controller/hitoController";
 import AppContext from "@/scripts/lib/core/AppContext";
 
 export default defineContentScript({
@@ -8,9 +8,9 @@ export default defineContentScript({
     const chromeHelper = ctx.make("chromeHelper");
 
     // Listen for messages from the background script
-    chromeHelper.addMessageListener((message, sender, sendResponse) => {
+    chromeHelper.addMessageListener((message) => {
       if (message.action === "checkTime") {
-        loop()
+        changeKintaiStatusWithinTime()
       }
     });
 

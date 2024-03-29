@@ -141,8 +141,14 @@ let shouldCheckOut = computed(() => {
   return true;
 });
 
+/**
+ * Function to handle the checkout process.
+ *
+ * @param {UserCredential} credential - the user's credential
+ * @return {void}
+ */
 async function onCheckOut(credential: UserCredential) {
-  if (shouldCheckOut && !confirm(constants.MSG_INFO_CONFIRM_BEFORE_CHECKOUT)) {
+  if (!shouldCheckOut.value && !confirm(constants.MSG_INFO_CONFIRM_BEFORE_CHECKOUT)) {
     return;
   }
 
