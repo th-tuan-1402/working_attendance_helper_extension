@@ -309,6 +309,7 @@ async function checkIn(credential: UserCredential) {
       type_log: constants.TYPE_CHECKIN_CODE,
       latitude: constants.LOCALE_LATITUDE,
       longitude: constants.LOCALE_LONGITUDE,
+      accessToken: credential.accessKintaiToken,
     };
 
     let dataObj = await api.changeKintaiStatus(params);
